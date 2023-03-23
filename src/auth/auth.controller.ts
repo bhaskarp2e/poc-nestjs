@@ -40,7 +40,6 @@ export class AuthController {
     async updateUser(@Param('id')id, @Res({passthrough: true}) res: Response) {
         try{
             const resp = await this.authService.updateUser(id);
-            console.log("responseUpdate",resp)
              res.status(200).json({success:true, body:{data:resp}});
         }catch(err){
              res.status(404).json({success:false, body:{error:err, msg:err?.message}});
@@ -53,7 +52,6 @@ export class AuthController {
     async updateUserDat(@Param('id') id: string, @Body() dto: UpdateUserDto, @Res({passthrough: true}) res: Response) {
         try{
             const resp = await this.authService.updateUserData(id,dto);
-            console.log("responseUpdate",resp)
              res.status(200).json({success:true, body:{data:resp}});
         }catch(err){
              res.status(404).json({success:false, body:{error:err, msg:err?.message}});

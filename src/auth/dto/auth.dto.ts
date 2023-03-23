@@ -45,8 +45,14 @@ export interface UpdateDto{
     id:string
 }
 
-export interface UpdateUserDto{
-    firstName:string,
+export class UpdateUserDto{
+    
+    @IsString()
+    @IsNotEmpty()
+    firstName:string
+
+    @IsString()
+    @IsNotEmpty()
     lastName:string
 }
 
