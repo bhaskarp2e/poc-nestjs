@@ -3,6 +3,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { SignUpDto, LoginInDto, UpdateDto, UpdateUserDto } from './dto';
 import { AuthUser, AuthSchema, AuthDocument } from './auth.schema';
+import * as argon from 'argon2';
 
 @Injectable()
 export class AuthService {
@@ -15,8 +16,11 @@ export class AuthService {
 
         try{
 
-            const createdUser = new this.authSchema(dto);
-            return await createdUser.save();
+            const hashPass = await argon.hash(dto.password);
+            const createdUser = new this.authSchema({...dto, password:hashPass});
+            let respUser = await createdUser.save();
+            delete respUser.password;
+            return respUser;
 
         }catch(err){
             throw err;
@@ -30,11 +34,21 @@ export class AuthService {
     async login(dto:LoginInDto): Promise<AuthUser>{
 
         try{
-            const getUser =  await this.authSchema.findOne({email:dto.email, password:dto.password}, {password:0}).lean();
+            const getUser =  await this.authSchema.findOne({email:dto.email});
 
             if(!getUser){
                 throw Error("User not found");
             }
+
+            const userMatch =  await argon.verify(String(getUser.password), dto.password)
+
+            if(!userMatch){
+                throw Error("Credentials invalid");
+
+            }
+
+            delete getUser.password;
+           
             return getUser;
 
         }catch(err){
