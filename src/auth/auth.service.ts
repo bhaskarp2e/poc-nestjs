@@ -30,7 +30,7 @@ export class AuthService {
     async login(dto:LoginInDto): Promise<AuthUser>{
 
         try{
-            const getUser =  await this.authSchema.findOne({email:dto.email}, {password:0}).lean();
+            const getUser =  await this.authSchema.findOne({email:dto.email, password:dto.password}, {password:0}).lean();
 
             if(!getUser){
                 throw Error("User not found");
