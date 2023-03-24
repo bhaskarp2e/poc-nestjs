@@ -28,6 +28,9 @@ export type AuthDocument = AuthUser & Document;
 @Schema()
 export class AuthUser{
 
+    @Prop({type:String, required:true, unique:true, minlength:8, maxlength:15})
+    userName:string;
+
     @Prop({type:String, required:true})
     firstName:string;
 

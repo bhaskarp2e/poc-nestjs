@@ -9,6 +9,11 @@ import { ObjectId } from "mongoose";
 // }
 
 export class SignUpDto{
+
+    @IsString()
+    @IsNotEmpty()
+    userName:string
+
     @IsString()
     @IsNotEmpty()
     firstName:string
@@ -46,7 +51,7 @@ export interface UpdateDto{
 }
 
 export class UpdateUserDto{
-    
+
     @IsString()
     @IsNotEmpty()
     firstName:string

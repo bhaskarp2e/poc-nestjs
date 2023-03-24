@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { SignUpDto, LoginInDto, UpdateDto, UpdateUserDto } from './dto';
@@ -9,93 +10,95 @@ import * as argon from 'argon2';
 export class AuthService {
 
 
-    constructor(@InjectModel(AuthUser.name) private authSchema: Model<AuthDocument>) {}
+    constructor(@InjectModel(AuthUser.name) private authSchema: Model<AuthDocument>,
+       ) { }
 
 
-    async signUp(dto:SignUpDto): Promise<AuthUser> {
+    async signUp(dto: SignUpDto): Promise<AuthUser> {
 
-        try{
+        try {
 
             const hashPass = await argon.hash(dto.password);
-            const createdUser = new this.authSchema({...dto, password:hashPass});
+            const createdUser = new this.authSchema({ ...dto, password: hashPass });
             let respUser = await createdUser.save();
-            delete respUser.password;
+            respUser.password = undefined;
             return respUser;
 
-        }catch(err){
+        } catch (err) {
             throw err;
 
         }
 
-       
-      }
+
+    }
 
 
-    async login(dto:LoginInDto): Promise<AuthUser>{
+    async login(dto: LoginInDto): Promise<AuthUser> {
 
-        try{
-            const getUser =  await this.authSchema.findOne({email:dto.email});
+        try {
+            // console.log("checkConfig",this.config.get('JWT_SECRET'));
+            const getUser = await this.authSchema.findOne({ email: dto.email });
 
-            if(!getUser){
+            if (!getUser) {
                 throw Error("User not found");
             }
 
-            const userMatch =  await argon.verify(String(getUser.password), dto.password)
+            const userMatch = await argon.verify(String(getUser.password), dto.password)
 
-            if(!userMatch){
+            if (!userMatch) {
                 throw Error("Credentials invalid");
 
             }
 
-            delete getUser.password;
-           
+            getUser.password = undefined;
+
             return getUser;
 
-        }catch(err){
+        } catch (err) {
             throw err;
 
         }
     }
 
 
-    async updateUser(dto:UpdateDto): Promise<any>{
+    async updateUser(dto: UpdateDto): Promise<any> {
 
-        try{
-            console.log("getData",dto);
-            const getUser =  await this.authSchema.updateOne({_id:dto},{lastName:"lastname"});
+        try {
+            console.log("getData", dto);
+            const getUser = await this.authSchema.updateOne({ _id: dto }, { lastName: "lastname" });
 
 
-            console.log("gotData",getUser);
+            console.log("gotData", getUser);
 
-            if(!getUser){
+            if (!getUser) {
                 throw Error("User not found");
             }
             return getUser;
 
-        }catch(err){
-            console.log("errorUpdateUser",err?.message)
+        } catch (err) {
+            console.log("errorUpdateUser", err?.message)
             throw err;
 
         }
     }
-    
-    async updateUserData(id:String, dto:UpdateUserDto): Promise<any>{
 
-        try{
-            const getUser =  await this.authSchema.updateOne({_id:id},{...dto});
+    async updateUserData(id: String, dto: UpdateUserDto): Promise<any> {
+
+        try {
+            const getUser = await this.authSchema.updateOne({ _id: id }, { ...dto });
 
 
 
-            if(!getUser){
+            if (!getUser) {
                 throw Error("User not found");
             }
             return getUser;
 
-        }catch(err){
+        } catch (err) {
             throw err;
 
         }
     }
 
-    
+
 }
