@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { SignUpDto, LoginInDto, UpdateDto, UpdateUserDto } from './dto';
@@ -10,7 +11,7 @@ import * as argon from 'argon2';
 export class AuthService {
 
 
-    constructor(@InjectModel(AuthUser.name) private authSchema: Model<AuthDocument>,
+    constructor(@InjectModel(AuthUser.name) private authSchema: Model<AuthDocument>, private jwt:JwtService, private config:ConfigService
        ) { }
 
 
@@ -22,6 +23,8 @@ export class AuthService {
             const createdUser = new this.authSchema({ ...dto, password: hashPass });
             let respUser = await createdUser.save();
             respUser.password = undefined;
+            const jwtToken = await this.signToken(respUser._id, respUser.email);
+            console.log(jwtToken);
             return respUser;
 
         } catch (err) {
@@ -36,7 +39,6 @@ export class AuthService {
     async login(dto: LoginInDto): Promise<AuthUser> {
 
         try {
-            // console.log("checkConfig",this.config.get('JWT_SECRET'));
             const getUser = await this.authSchema.findOne({ email: dto.email });
 
             if (!getUser) {
@@ -97,6 +99,24 @@ export class AuthService {
         } catch (err) {
             throw err;
 
+        }
+    }
+
+
+    async signToken(id:string, email:string):Promise<{access_token:string}>{
+
+        const payLoad = {
+            id,
+            email
+        }
+        const secretJwt = this.config.get('JWT_SECRET');
+        const token = await this.jwt.signAsync(payLoad,{
+            expiresIn:'1d',
+            secret:secretJwt
+        });
+
+        return {
+            access_token:token
         }
     }
 
