@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { SignUpDto, LoginInDto, UpdateDto, UpdateUserDto } from './dto';
+import { SignUpDto, LoginInDto, UpdateDto, UpdateUserDto, UserId } from './dto';
 import { AuthUser, AuthSchema, AuthDocument } from './auth.schema';
 import * as argon from 'argon2';
 
@@ -15,7 +15,7 @@ export class AuthService {
        ) { }
 
 
-    async userDetails(dto: {id:string}): Promise<any> {
+    async userDetails(dto: UserId): Promise<any> {
 
         try {
             const getUser = await this.authSchema.findById({ _id: dto });
@@ -25,6 +25,24 @@ export class AuthService {
             }
             getUser.password=undefined;
             return getUser;
+
+        } catch (err) {
+            console.log("errorUpdateUser", err?.message)
+            throw err;
+
+        }
+    }
+
+    async validUser(dto: UserId): Promise<Boolean> {
+
+        try {
+            const getUser = await this.authSchema.findById({ _id: dto });
+
+            if (!getUser) {
+                throw Error("User not found");
+            }
+            getUser.password=undefined;
+            return true;
 
         } catch (err) {
             console.log("errorUpdateUser", err?.message)
@@ -54,7 +72,7 @@ export class AuthService {
     }
 
 
-    async login(dto: LoginInDto): Promise<AuthUser> {
+    async login(dto: LoginInDto): Promise<string> {
 
         try {
             const getUser = await this.authSchema.findOne({ email: dto.email });
@@ -72,7 +90,11 @@ export class AuthService {
 
             getUser.password = undefined;
 
-            return getUser;
+            const jwtToken = await this.signToken(getUser._id, getUser.email);
+
+            console.log(jwtToken);
+
+            return jwtToken.access_token;
 
         } catch (err) {
             throw err;

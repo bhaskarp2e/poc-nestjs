@@ -49,6 +49,9 @@ export class LoginInDto{
 export interface UpdateDto{
     id:string
 }
+export interface UserId{
+    id:string
+}
 
 export class UpdateUserDto{
 
