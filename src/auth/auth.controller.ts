@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Param, Post, Res } from '@nestjs/common';
+import { Body, Controller, HttpCode, Param, Get, Post,Delete, Res } from '@nestjs/common';
 import { Patch } from '@nestjs/common/decorators';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
@@ -34,7 +34,33 @@ export class AuthController {
         }
        
 
+    
     }
+    
+    @Get('details/:id')
+    async profile(@Param('id')id, @Res({passthrough: true}) res: Response) {
+        try{
+            const resp = await this.authService.userDetails(id);
+            res.status(200).json({success:true, body:{data:resp}});
+        }catch(err){
+            res.status(404).json({success:false, body:{error:err, msg:err?.message}});
+        }
+       
+
+    }
+
+    @Delete('details/:id')
+    async delProfile(@Param('id')id, @Res({passthrough: true}) res: Response) {
+        try{
+            const resp = await this.authService.deleteUser(id);
+            res.status(200).json({success:true, body:{data:resp}});
+        }catch(err){
+            res.status(404).json({success:false, body:{error:err, msg:err?.message}});
+        }
+       
+
+    }
+
 
     @Patch('update/:id')
     async updateUser(@Param('id')id, @Res({passthrough: true}) res: Response) {

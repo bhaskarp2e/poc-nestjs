@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -14,6 +14,24 @@ export class AuthService {
     constructor(@InjectModel(AuthUser.name) private authSchema: Model<AuthDocument>, private jwt:JwtService, private config:ConfigService
        ) { }
 
+
+    async userDetails(dto: {id:string}): Promise<any> {
+
+        try {
+            const getUser = await this.authSchema.findById({ _id: dto });
+
+            if (!getUser) {
+                throw Error("User not found");
+            }
+            getUser.password=undefined;
+            return getUser;
+
+        } catch (err) {
+            console.log("errorUpdateUser", err?.message)
+            throw err;
+
+        }
+    }
 
     async signUp(dto: SignUpDto): Promise<AuthUser> {
 
@@ -102,6 +120,23 @@ export class AuthService {
         }
     }
 
+    async deleteUser(dto: {id:string}): Promise<any> {
+
+        try {
+            const delUser = await this.authSchema.findOneAndDelete({ _id: dto });
+
+            if (!delUser) {
+                throw Error("User not found");
+            }
+            delUser.password=undefined;
+            return delUser;
+
+        } catch (err) {
+            console.log("errorUpdateUser", err?.message)
+            throw err;
+
+        }
+    }
 
     async signToken(id:string, email:string):Promise<{access_token:string}>{
 
