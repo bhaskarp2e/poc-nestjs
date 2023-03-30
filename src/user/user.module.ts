@@ -7,12 +7,9 @@ import { AuthUser, AuthSchema } from '../auth/auth.schema';
 import { AuthMid } from '../auth/middleware/auth.middleware';
 
 @Module({
-  imports: [ConfigModule,MongooseModule.forFeature([{name: AuthUser.name, schema: AuthSchema }])],
+  imports: [MongooseModule.forFeature([{name: AuthUser.name, schema: AuthSchema }])],
   controllers: [UserController],
   providers: [UserService]
 })
-export class UserModule implements NestModule{
-    configure(consumer: MiddlewareConsumer) {
-        consumer.apply(AuthMid).forRoutes('user');
-      }
-}
+export class UserModule{}
+

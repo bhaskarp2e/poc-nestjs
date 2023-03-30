@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { SignUpDto, LoginInDto, UpdateDto, UpdateUserDto, UserId } from './dto';
+import { SignUpDto, LoginInDto, UpdateDto, UpdateUserDto, UserId, UserToken } from './dto';
 import { AuthUser, AuthSchema, AuthDocument } from './auth.schema';
 import * as argon from 'argon2';
 
@@ -33,16 +33,16 @@ export class AuthService {
         }
     }
 
-    async validUser(dto: UserId): Promise<Boolean> {
+    async validUser(dto: UserToken): Promise<AuthUser> {
 
         try {
-            const getUser = await this.authSchema.findById({ _id: dto });
+            const getUser = await this.authSchema.findById({ _id: dto.id });
 
             if (!getUser) {
                 throw Error("User not found");
             }
             getUser.password=undefined;
-            return true;
+            return getUser;
 
         } catch (err) {
             console.log("errorUpdateUser", err?.message)

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { SignUpDto, LoginInDto, UpdateDto, UpdateUserDto } from '../auth/dto';
 import { AuthUser, AuthSchema, AuthDocument } from '../auth/auth.schema';
@@ -12,11 +12,12 @@ export class UserService {
     constructor(@InjectModel(AuthUser.name) private authSchema: Model<AuthDocument>, private config:ConfigService
     ) { }
 
-    async profile(id:String): Promise<AuthUser> {
+    async profile(user:any): Promise<AuthUser> {
 
         try {
-            const getUser = await this.authSchema.findById({ id: id });
+            const getUser = await this.authSchema.findById(user._id);
 
+            console.log("profileService",getUser,user._id)
             if (!getUser) {
                 throw Error("User not found");
             }

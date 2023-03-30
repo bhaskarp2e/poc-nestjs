@@ -20,7 +20,7 @@ export class AuthMid implements NestMiddleware {
          setTimeout(()=>{
             console.log("awaitingAsync");
             resolve()
-         },5000);
+         },1000);
          
       })
 
