@@ -25,11 +25,10 @@ export class BlogService {
     }
 
 
-    async details(id:String){
+    async details(id:string){
 
         try{
             const resp = await this.blogSchema.findById(id);
-            console.log("postBlog",resp);
             return resp;
         }catch(err){
             
