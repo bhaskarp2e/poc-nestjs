@@ -10,12 +10,11 @@ export class UserController {
 
     constructor(private userService: UserService) {
     }
-@UseGuards(JwtGuard)
 
+    @UseGuards(JwtGuard)
     @Get('profile')
     async profile( @Req() req:Request, @Res({passthrough: true}) res: Response) {
         try{ 
-            console.log("userProfile",req.user)
 
             const resp =   await this.userService.profile(req.user);
     
