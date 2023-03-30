@@ -10,10 +10,10 @@ export class BlogService {
     constructor(@InjectModel(Blog.name) private blogSchema: Model<BlogDocument>
     ) { }
 
-    async postBlog(dto:PostBlog){
+    async postBlog(dto:PostBlog,user){
 
         try{
-            const resp = await this.blogSchema.create(dto);
+            const resp = await this.blogSchema.create({...dto,authorId:user._id});
             console.log("postBlog",resp);
             return resp;
         }catch(err){
@@ -28,7 +28,9 @@ export class BlogService {
     async details(id:string){
 
         try{
-            const resp = await this.blogSchema.findById(id);
+            const resp = await this.blogSchema.findById(id).populate({path: 'authorId',
+            model: 'AuthUser',
+            select: { 'password':0, '__v':0},});
             return resp;
         }catch(err){
             

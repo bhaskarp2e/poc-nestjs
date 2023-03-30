@@ -16,8 +16,8 @@ export class BlogController {
 
         try{
 
-            // console.log(dto)
-            const resp = await this.blogService.postBlog(dto);
+            console.log(dto,req.user)
+            const resp = await this.blogService.postBlog(dto,req.user);
             res.status(200).json({success:true, body:resp})
 
         }catch(err){

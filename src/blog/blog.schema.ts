@@ -18,6 +18,7 @@
 import { Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
 import mongoose, { HydratedDocument } from "mongoose";
 import { Document } from "mongoose";
+import { AuthUser } from "src/auth/auth.schema";
 
 // export type AuthUser = HydratedDocument<AuthUserClass>;
 
@@ -32,6 +33,10 @@ export class Blog{
 
     @Prop({type:String, required:true})
     description:string;
+
+    @Prop({type:mongoose.Schema.Types.ObjectId, required:true, ref:'AuthUser'})
+    authorId:AuthUser;
+
 
 }
 
