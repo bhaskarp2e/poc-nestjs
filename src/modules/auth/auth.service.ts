@@ -92,7 +92,7 @@ export class AuthService {
 
             const jwtToken = await this.signToken(getUser._id, getUser.email);
 
-            console.log(jwtToken);
+            // console.log(jwtToken);
 
             return jwtToken.access_token;
 

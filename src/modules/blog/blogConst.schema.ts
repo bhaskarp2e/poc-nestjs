@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { AuthUser } from '../auth/auth.schema';
+import { AuthUser } from '../../modules/auth/auth.schema';
 
 
 export const BlogSchema = new mongoose.Schema({

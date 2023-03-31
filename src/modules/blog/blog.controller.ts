@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpCode, Post,Req,Res, Param, UseGuards } from 
 import { BlogService } from './blog.service';
 import { Request,Response } from 'express';
 import { PostBlog } from './dto';
-import { JwtGuard } from 'src/auth/guard';
+import { JwtGuard } from 'src/common/guard';
 
 @Controller('blog')
 export class BlogController {
@@ -16,7 +16,7 @@ export class BlogController {
 
         try{
 
-            console.log(dto,req.user)
+            // console.log(dto,req.user)
             const resp = await this.blogService.postBlog(dto,req.user);
             res.status(200).json({success:true, body:resp})
 
@@ -31,7 +31,7 @@ export class BlogController {
     async details( @Param('id') id:string,  @Req() req:Request, @Res({passthrough: true}) res: Response){
 
         try{
-            console.log("/:id",id)
+            // console.log("/:id",id)
            const resp = await this.blogService.details(id);
             res.status(200).json({success:true, body:{data:resp}})
 

@@ -1,7 +1,7 @@
 import { Body, Controller, Param, Patch, Req,Res, Get, Headers, UseGuards   } from '@nestjs/common';
 import { Request,Response } from 'express';
-import { UpdateUserDto } from 'src/auth/dto';
-import { JwtGuard } from 'src/auth/guard';
+import { UpdateUserDto } from 'src/modules/auth/dto';
+import { JwtGuard } from 'src/common/guard';
 import { UserService } from './user.service';
 
 @Controller('user')

@@ -5,8 +5,8 @@ import {
   ExtractJwt,
   Strategy,
 } from 'passport-jwt';
-import { AuthService } from '../auth.service';
-import { UserToken } from '../dto';
+import { AuthService } from '.././../modules/auth/auth.service';
+import { UserToken } from '../../modules/auth/dto';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(
@@ -25,13 +25,8 @@ export class JwtStrategy extends PassportStrategy(
   }
 
   async validate(payload: UserToken) {
-    // const user =
-    //   await this.prisma.user.findUnique({
-    //     where: {
-    //       id: payload.sub,
-    //     },
-    //   });
-    console.log("checkValidateUser",payload)
+    
+    // console.log("checkValidateUser",payload)
       const user = await this.authService.validUser(payload);
 
       return user;
