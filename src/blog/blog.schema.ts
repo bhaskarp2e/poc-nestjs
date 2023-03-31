@@ -26,7 +26,7 @@ import { AuthUser } from "src/auth/auth.schema";
 
 
 @Schema()
-export class Blog{
+export class Blogs{
 
     @Prop({type:String, required:true, unique:true, minlength:8, maxlength:15})
     title:string;
@@ -40,7 +40,7 @@ export class Blog{
 
 }
 
-export type BlogDocument = Blog & Document;
+export type BlogDocument = Blogs & Document;
 
-export const BlogSchema = SchemaFactory.createForClass(Blog);
+export const BlogSchema = SchemaFactory.createForClass(Blogs);
 
