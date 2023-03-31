@@ -3,6 +3,8 @@ import { BlogService } from './blog.service';
 import { Request,Response } from 'express';
 import { PostBlog } from './dto';
 import { JwtGuard } from 'src/common/guard';
+import { ErrorMessage } from 'src/common/constants/error.message';
+import { CurrentUser } from 'src/common/decorators/current.user';
 
 @Controller('blog')
 export class BlogController {
@@ -21,6 +23,7 @@ export class BlogController {
             res.status(200).json({success:true, body:resp})
 
         }catch(err){
+            throw err;
             res.status(404).json({success:false, body:{error:err, msg:err?.message}});
 
         }
@@ -28,15 +31,19 @@ export class BlogController {
 
     @UseGuards(JwtGuard)
     @Get('/:id')
-    async details( @Param('id') id:string,  @Req() req:Request, @Res({passthrough: true}) res: Response){
+    async details( @Param('id') id:string, @CurrentUser() user){
 
         try{
-            // console.log("/:id",id)
+            // console.log("/:id",id,user)
            const resp = await this.blogService.details(id);
-            res.status(200).json({success:true, body:{data:resp}})
+            // res.status(200).json({success:true, body:{data:resp}})
+            return {success:true, body:{data:resp}};
 
         }catch(err){
-            res.status(404).json({success:false, body:{error:err, msg:err?.message}});
+            throw err;
+            
+            // return {success:false, body:{error:{err:err,message:err?.message}}}
+            // res.status(404).json({success:false, body:{error:err, msg:err?.message}});
 
         }
     }
