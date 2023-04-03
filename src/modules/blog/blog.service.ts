@@ -48,7 +48,7 @@ export class BlogService {
                 JSON.stringify({
                   otp: 123456
                 }),
-                5000
+                20000
               );
 
             return resp;
