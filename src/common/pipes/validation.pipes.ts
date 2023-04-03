@@ -27,7 +27,7 @@ export class ValidationPipe implements PipeTransform {
     value: any,
     { metatype }: ArgumentMetadata,
   ): Promise<ValidationErrorDto[]> {
-    console.log('-----------', value, metatype);
+    // console.log('-----------', {value}, {metatype});
     if (value === null) {
       value = Object.assign({}, value);
     }
