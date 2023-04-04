@@ -4,9 +4,10 @@ import { BlogController } from './blog.controller';
 import { BlogService } from './blog.service';
 import { Blogs, BlogSchema } from './blog.schema';
 import { ConfigurationService } from 'src/common/config/config.service';
+import { CachingModule } from 'src/common/config/cache/cache.module';
 
 @Module({
-    imports: [MongooseModule.forFeature([{ name:Blogs.name, schema: BlogSchema }])],
+    imports: [MongooseModule.forFeature([{ name:Blogs.name, schema: BlogSchema }]), CachingModule],
     controllers: [BlogController],
     providers: [BlogService, ConfigurationService],
 

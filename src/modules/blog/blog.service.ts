@@ -1,5 +1,5 @@
-// import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
-import { Inject, Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+// import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cache } from 'cache-manager';
 import mongoose, { Model } from 'mongoose';
@@ -14,7 +14,7 @@ export class BlogService {
 
     constructor(@InjectModel(Blogs.name) private blogSchema: Model<BlogDocument>,
     // private readonly configService: ConfigurationService,
-    // @Inject(CACHE_MANAGER) private cacheModule: Cache
+    @Inject(CACHE_MANAGER) private cacheModule: Cache
     ) { }
 
     async postBlog(dto:PostBlog,user){
@@ -42,15 +42,17 @@ export class BlogService {
             model: 'AuthUser',
             select: { 'password':0, '__v':0}});
 
-            // const redisData = await this.cacheModule.get('testKey');
-            // console.log("redisKey",redisData)
-            // await this.cacheModule.set(
-            //     "testKey",
-            //     JSON.stringify({
-            //       otp: 123456
-            //     }),
-            //     20000
-            //   );
+            const redisData = await this.cacheModule.get('test');
+            console.log("redisKeyBefore",redisData)
+            await this.cacheModule.set(
+                "test",
+                JSON.stringify({
+                  otp: 123456
+                }),
+                {ttl:5000}
+              );
+              const redisDataAfter = await this.cacheModule.get('test');
+            console.log("redisDataAfter",redisDataAfter)
 
             return resp;
         }catch(err){
