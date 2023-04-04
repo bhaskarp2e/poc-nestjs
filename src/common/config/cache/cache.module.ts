@@ -18,7 +18,7 @@ import { CacheService } from './cache.service';
             inject: [ConfigurationService],
         })
     ],
-    providers: [CacheService,CacheModule],
+    providers: [CacheService],
     exports: [CacheService,CacheModule]
 })
 
